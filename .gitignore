@@ -1,12 +1,15 @@
-render/*
-!render/thumbnails
-!render/generated.txt
-export/logo/*
-!export/logo/OpenBikeSensor
-logo/*
-!logo/OpenBikeSensor
-!logo/template
-!logo/README.md
-customizer/dist/*
-*.egg-info/
-venv/*
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+**/.DS_Store
+
+# Finder thumbnails / metadata
+._*
+.Spotlight-V100
+.Trashes
+
+# Common temporary files
+*~
+*.swp
+*.tmp
