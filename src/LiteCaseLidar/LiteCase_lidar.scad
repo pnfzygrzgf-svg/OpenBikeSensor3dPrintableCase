@@ -146,7 +146,7 @@ module ESP() {
 module USB_hole() {
   translate(Lite_USB) {
     translate([0, 0, -2.25]) rounded_cube(45, 12.5, 8, 0, 0, center = true);
-    rounded_cube(45, 10, 14, 2.5, 0, center = true);
+    rounded_cube(45, 10, 20, 2.5, 0, center = true);
   }
 }
 
@@ -352,3 +352,4 @@ intersection() {
 }
 
 if ($preview) translate([80, 0, 0]) LiteElectronics();
+
