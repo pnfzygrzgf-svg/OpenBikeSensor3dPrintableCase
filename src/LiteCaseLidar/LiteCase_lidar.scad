@@ -44,7 +44,7 @@ square_x = 5;
 lite_l = 45;
 lite_w = 80 - 18;
 
-$fn = 120;
+$fn = 40;
 
 // PCB
 Lite_PCB_Dimensions = [44, 29.2, 1.7];

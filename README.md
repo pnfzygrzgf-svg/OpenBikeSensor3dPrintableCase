@@ -6,6 +6,10 @@ This repository contains the 3d-printable models for OpenBikeSensor enclosures.
 [Model selection](https://www.openbikesensor.org/device/) (German) |
 [3D printing instructions](https://www.openbikesensor.org/docs/hardware/general/case/) (German)
 
+> **Fork notice:** This repository is a **fork/clone** of the official OpenBikeSensor case repository and includes
+> additional variants.  
+> **New in this fork:** a case for **OpenBikeSensor Lite LiDAR** (`src/LiteCaseLidar`).
+
 If you encounter any problems or have feature requests, please open an issue on
 GitHub. If you need assistance related to the contents of this repository,
 please ask in the [project forums](https://forum.openbikesensor.org).
