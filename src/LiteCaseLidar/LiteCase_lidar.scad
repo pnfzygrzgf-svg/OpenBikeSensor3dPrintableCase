@@ -20,19 +20,24 @@ show_tfluna_preview     = true;
 tfluna_preview_alpha    = 0.55;
 tfluna_preview_color    = "orange";
 
-// ---------------- Through-Bohrungen ----------------
+// ---------------- Through-Bohrungen (OVAL) ----------------
 through_enable          = true;
 through_preview         = true;
 
 through_base_pos        = [23.8, 0, 20.6];  // Startwert = Lite_transducer_position
 through_offset          = [0, 0, 5];
 
-through_spacing         = 12;               // Mitte-zu-Mitte
-through_sep_vec         = [1, 0, 0];        // auseinander ziehen (nicht zwingend Bohr-Achse)
+// OVAL-GROESSE: 25 x 14 mm (wie Rechteck-Aussenmass)
+through_oval_length     = 25;               // Gesamtlänge des Ovals (Ende-zu-Ende)
+through_d               = 14;               // Breite des Ovals (Ø der Rundungen)
 
-through_d               = 14;
+// Richtung des Ovals (in XY/XZ/YZ je nach Achse) - bestimmt die "Längsrichtung"
+through_sep_vec         = [1, 0, 0];
+
+// Spiel / Clearance
 through_clearance       = 0.0;
 
+// Bohr-Achse und Höhe (Durchgangslänge)
 through_axis            = "y";              // "x" | "y" | "z"
 through_h               = 50;
 
@@ -220,24 +225,36 @@ module TFLuna_pair(cutter=false) {
 
 
 // ============================================================
-// THROUGH-BOHRUNGEN (Preview + Cutter)
+// THROUGH-BOHRUNGEN (OVAL) (Preview + Cutter)
 // ============================================================
-module ThroughTubes_pair() {
+module ThroughOval() {
   base = through_base_pos + through_offset;
-  half = through_spacing / 2;
-  d    = through_d + 2*through_clearance;
 
-  for (s = [-1, 1]) {
-    p = base + [through_sep_vec[0]*s*half,
-                through_sep_vec[1]*s*half,
-                through_sep_vec[2]*s*half];
+  // Breite (Ø der Endrundungen) + Spiel
+  d = through_d + 2*through_clearance;
 
+  // Gesamtlänge Ende-zu-Ende + Spiel (optional)
+  L = through_oval_length + 2*through_clearance;
+
+  // Mittelpunktabstand der Endrundungen = L - d
+  half = (L - d) / 2;
+
+  function vnorm(v) = v / max(norm(v), 1e-9);
+  v = vnorm(through_sep_vec) * half;
+
+  module oriented_cyl(pos) {
     if (through_axis == "x")
-      translate(p) rotate([0, 90, 0]) cylinder(d=d, h=through_h, center=true);
+      translate(pos) rotate([0, 90, 0]) cylinder(d=d, h=through_h, center=true);
     else if (through_axis == "y")
-      translate(p) rotate([90, 0, 0]) cylinder(d=d, h=through_h, center=true);
+      translate(pos) rotate([90, 0, 0]) cylinder(d=d, h=through_h, center=true);
     else
-      translate(p) cylinder(d=d, h=through_h, center=true);
+      translate(pos) cylinder(d=d, h=through_h, center=true);
+  }
+
+  // Oval = hull() aus zwei Zylindern
+  hull() {
+    oriented_cyl(base + v);
+    oriented_cyl(base - v);
   }
 }
 
@@ -278,7 +295,7 @@ module LiteElectronics(onlyboards = false) {
     color(tfluna_preview_color, tfluna_preview_alpha) TFLuna_pair(cutter=false);
 
   if ($preview && through_preview && through_enable)
-    color("red", 0.4) ThroughTubes_pair();
+    color("red", 0.4) ThroughOval();
 }
 
 
@@ -329,7 +346,7 @@ module lite_case() {
     LiteElectronics();
     LidCutter();
     TFLuna_pair(cutter=true);
-    if (through_enable) ThroughTubes_pair();
+    if (through_enable) ThroughOval();
   }
 }
 
@@ -352,4 +369,3 @@ intersection() {
 }
 
 if ($preview) translate([80, 0, 0]) LiteElectronics();
-
