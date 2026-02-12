@@ -193,6 +193,7 @@ SeatPostMount_diameter = 28; // [18:36]
 SeatPostMount_stop_plate_thickness = 2; // [1:0.1:3]
 SeatPostMount_stop_plate_width = MountRail_base_width  + 4;
 SeatPostMount_length = 20; // [15:100]
+SeatPostMount_long_length = 60; // 
 SeatPostMount_channel_depth = 4; // [1:20]
 
 // TODO: decide on a namespace, at least `*_holes_dx/dy` are global

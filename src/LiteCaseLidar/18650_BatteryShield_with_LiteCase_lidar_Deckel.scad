@@ -1,47 +1,65 @@
+// ============================================================
+// LiteCaseLidar Deckel + 18650 Battery Shield V3 Bottom
+// ============================================================
+
 use <../../lib/Round-Anything/polyround.scad>
-use <../Mounting/StandardMountAdapter.scad>
 
 // ============================================================
 // CONFIG
 // ============================================================
+$fn = 40;
 
-// ---------------- TF-Luna STL ----------------
-tfluna_file             = "tfluna.stl";     // im gleichen Ordner
-tfluna_scale            = [1, 1, 1];        // 1:1
+// Welches Teil rendern?
+render_part = "combined";  
+// Optionen:
+// "litecaselidar_bottom" = nur LiteCaseLidar Unterteil
+// "battery_bottom" = nur Battery Shield Unterteil
+// "combined" = LiteCaseLidar mit Battery Shield oben drauf
+// "both" = beide nebeneinander
+// "preview" = LiteElectronics Preview
+
+// Battery Shield Position auf LiteCaseLidar (nur für "combined")
+battery_offset_x = -42;      // X-Verschiebung
+battery_offset_y = -15;      // Y-Verschiebung  
+battery_offset_z = 10;     // Z-Verschiebung (Höhe über LiteCaseLidar)
+battery_rotation_x = 0;    // Rotation um X-Achse in Grad
+battery_rotation_y = 0;    // Rotation um Y-Achse in Grad
+battery_rotation_z = 0;    // Rotation um Z-Achse in Grad
+
+// Abstand zwischen Teilen wenn "both"
+parts_spacing = 120;
+
+// ============================================================
+// TF-LUNA CONFIG
+// ============================================================
+tfluna_file             = "tfluna.stl";
+tfluna_scale            = [1, 1, 1];
 tfluna_rot_common       = [90, 0, -180];
-
-tfluna_mirror_axis      = [0, 0, 1];        // für i=+1
-tfluna_pos_offset_m     = [0,  2, 15];      // i=-1
-tfluna_pos_offset_p     = [0, -2, 15];      // i=+1
-
-tfluna_cutter_scale_up  = 1.1;              // Cutter-Spiel
-
+tfluna_mirror_axis      = [0, 0, 1];
+tfluna_pos_offset_m     = [0,  2, 15];
+tfluna_pos_offset_p     = [0, -2, 15];
+tfluna_cutter_scale_up  = 1.1;
 show_tfluna_preview     = true;
 tfluna_preview_alpha    = 0.55;
 tfluna_preview_color    = "orange";
 
-// ---------------- Through-Bohrungen (OVAL) ----------------
+// ============================================================
+// THROUGH-BOHRUNGEN (OVAL) CONFIG
+// ============================================================
 through_enable          = true;
 through_preview         = true;
-
-through_base_pos        = [23.8, 0, 20.6];  // Startwert = Lite_transducer_position
+through_base_pos        = [23.8, 0, 20.6];
 through_offset          = [0, 0, 5];
-
-// OVAL-GROESSE: 25 x 14 mm (wie Rechteck-Aussenmass)
-through_oval_length     = 25;               // Gesamtlänge des Ovals (Ende-zu-Ende)
-through_d               = 14;               // Breite des Ovals (Ø der Rundungen)
-
-// Richtung des Ovals (in XY/XZ/YZ je nach Achse) - bestimmt die "Längsrichtung"
+through_oval_length     = 25;
+through_d               = 14;
 through_sep_vec         = [1, 0, 0];
-
-// Spiel / Clearance
 through_clearance       = 0.0;
-
-// Bohr-Achse und Höhe (Durchgangslänge)
-through_axis            = "y";              // "x" | "y" | "z"
+through_axis            = "y";
 through_h               = 50;
 
-// ---------------- Original Parameter ----------------
+// ============================================================
+// LITECASELIDAR PARAMETERS
+// ============================================================
 corner_x = 24;
 boardcorner_x = 17;
 boardcorner_y = 23;
@@ -49,36 +67,30 @@ square_x = 5;
 lite_l = 45;
 lite_w = 80 - 18;
 
-$fn = 40;
-
-// PCB
 Lite_PCB_Dimensions = [44, 29.2, 1.7];
-
-// ESP Socket
 Lite_ESP_socket_dimensions = [38, 2.54, 9 + Lite_PCB_Dimensions[2] + 1.8];
-
-// Transducer
 Lite_transducer_position       = [23.8, 0, 20.6];
 Lite_transducer_variance       = 1.2;
 Lite_transducer_diameter       = 16 + Lite_transducer_variance;
 Lite_transducer_diameter_small = 12.5 + Lite_transducer_variance;
-
-// ESP
 Lite_ESP_position   = [0, 0, -16.2];
 Lite_ESP_dimensions = [53, 29, 4.8];
-
-// USB
 Lite_USB = [55, 0, -14.5];
-
-// Screwmount
 Lite_screwmount_top    = 4;
 Lite_screwmount_bottom = 6;
 Lite_screwmount_height = Lite_screwmount_top + Lite_screwmount_bottom;
 
-// Derived
 sensor_x = -Lite_transducer_position[2] + 0.5;
 sensor_y =  Lite_transducer_position[0];
 
+// ============================================================
+// BATTERY SHIELD V3 PARAMETERS
+// ============================================================
+kantenradius = 2;
+length = 100;
+width = 30;
+holelength = 3;
+holewidth = 2.5;
 
 // ============================================================
 // HELPERS
@@ -95,9 +107,8 @@ module rounded_cube(x, y, z, r, r2, center = true) {
     );
 }
 
-
 // ============================================================
-// SHELL GEOMETRY
+// LITECASELIDAR SHELL GEOMETRY
 // ============================================================
 module SidePolygon() {
   corners = [
@@ -136,9 +147,8 @@ module Box() {
   }
 }
 
-
 // ============================================================
-// ELECTRONICS
+// LITECASELIDAR ELECTRONICS
 // ============================================================
 module ESP() {
   difference() {
@@ -178,10 +188,6 @@ module UltrasonicCarrier(i, h = 30) {
       color("blue") translate([23.9, i*7, 17.99]) cube([41.5, 60, h + 14], center = true);
     }
   }
-
-  // alte Röhren bleiben deaktiviert:
-  // translate(Lite_transducer_position - [0, 8*i, 0])
-  //   rotate([i*90, 0, 0]) cylinder(d = Lite_transducer_diameter_small, h = 40);
 }
 
 module Screwbump(size = 6, hole_diameter = 3.8, height = 6, bottom = true, toppart = 2.1, insert = 4) {
@@ -197,9 +203,8 @@ module Screwbump(size = 6, hole_diameter = 3.8, height = 6, bottom = true, toppa
   }
 }
 
-
 // ============================================================
-// TF-LUNA (Preview + Cutter)
+// TF-LUNA
 // ============================================================
 module _tfluna_import(cutter=false) {
   s = cutter ? [tfluna_cutter_scale_up, tfluna_cutter_scale_up, tfluna_cutter_scale_up] : [1,1,1];
@@ -223,20 +228,13 @@ module TFLuna_pair(cutter=false) {
   }
 }
 
-
 // ============================================================
-// THROUGH-BOHRUNGEN (OVAL) (Preview + Cutter)
+// THROUGH-BOHRUNGEN (OVAL)
 // ============================================================
 module ThroughOval() {
   base = through_base_pos + through_offset;
-
-  // Breite (Ø der Endrundungen) + Spiel
   d = through_d + 2*through_clearance;
-
-  // Gesamtlänge Ende-zu-Ende + Spiel (optional)
   L = through_oval_length + 2*through_clearance;
-
-  // Mittelpunktabstand der Endrundungen = L - d
   half = (L - d) / 2;
 
   function vnorm(v) = v / max(norm(v), 1e-9);
@@ -251,16 +249,14 @@ module ThroughOval() {
       translate(pos) cylinder(d=d, h=through_h, center=true);
   }
 
-  // Oval = hull() aus zwei Zylindern
   hull() {
     oriented_cyl(base + v);
     oriented_cyl(base - v);
   }
 }
 
-
 // ============================================================
-// LITE ELECTRONICS (für Cut + Preview)
+// LITE ELECTRONICS ASSEMBLY
 // ============================================================
 module LiteElectronics(onlyboards = false) {
   color("green") translate(-[0, Lite_PCB_Dimensions[1]/2, Lite_PCB_Dimensions[2]])
@@ -298,13 +294,13 @@ module LiteElectronics(onlyboards = false) {
     color("red", 0.4) ThroughOval();
 }
 
-
 // ============================================================
-// CASE
+// LITECASELIDAR CASE
 // ============================================================
 module lite_case() {
   difference() {
     union() {
+      // Screwbumps wie im Original
       translate([-7, 0, Lite_ESP_position[2] + 0.8 + 0.05 - Lite_screwmount_top])
         rotate([0, 0, 90])
           Screwbump(size=4, hole_diameter=3.2, height=Lite_screwmount_height, bottom=true, toppart=Lite_screwmount_top);
@@ -317,32 +313,19 @@ module lite_case() {
         rotate([0, 0, -90])
           Screwbump(size=4, hole_diameter=3.2, height=Lite_screwmount_height, bottom=true, toppart=Lite_screwmount_top);
 
-      translate([23.8, -3.5, -17.9]) rotate([180, 0, 90])
-        StandardMountAdapter(screwholes=false, channels=false, twoholes=false);
-
+      rotate([90, 90, 0]) Box();
       difference() {
-        union() {
-          rotate([90, 90, 0]) Box();
-
+        translate(Lite_USB + [0, 0, -3.5 - 1.6 + 1]) {
+          rounded_cube(1, 16.5, 6.5, 0, 1.5, center=true);
           difference() {
-            translate(Lite_USB + [0, 0, -3.5 - 1.6 + 1]) {
-              rounded_cube(28, 16.5, 6.5, 0, 1.5, center=true);
-              difference() {
-                rounded_cube(30, 15, 6.5, 0, 1.5, center=true);
-                translate([8, -20, -5]) cube([4, 60, 20]);
-              }
-            }
-            translate(Lite_USB + [10, 0, 0]) cube([4, 20, 12.5], center=true);
+            rounded_cube(1, 15, 6.5, 0, 1.5, center=true);
+            translate([8, -20, -5]) cube([4, 60, 20]);
           }
         }
-
-        hull()
-          translate([23.8, -3.5, -18]) rotate([180, 0, 90])
-            //StandardMountAdapter(screwholes=false, channels=false);
+        translate(Lite_USB + [10, 0, 0]) cube([4, 20, 12.5], center=true);
       }
     }
 
-    // Cutter-Inhalte
     LiteElectronics();
     LidCutter();
     TFLuna_pair(cutter=true);
@@ -350,22 +333,119 @@ module lite_case() {
   }
 }
 
-
 // ============================================================
-// PRINT SPLIT
+// BATTERY SHIELD V3 BOTTOM CASE
 // ============================================================
-rotate([0,180,0]) translate([-30,0,-Lite_ESP_position[2]-0.8])
-difference() {
-  lite_case();
-  translate([40, 0, Lite_ESP_position[2] + 0.8 + 49.95]) cube([120, 90, 100], center = true);
+module battery_bottomcase() {
+    difference() {
+        union() {
+            difference() {
+                // Abgerundeter Aussenkörper mit minkowski
+                minkowski() {
+                    translate([-2 + kantenradius, -2 + kantenradius, -2]) 
+                        cube([length + 4 - 2*kantenradius, width + 4 - 2*kantenradius, 9 - kantenradius]);
+                    cylinder(r=kantenradius, h=kantenradius);
+                }
+                
+                cube([length,width,10]);
+                
+                // USB-Port
+                translate([length-15.5,width-2,2])cube([10,5,6]);
+                
+                // Zusätzliches Loch 1 (29x52.5mm)
+                loch_rotation = 90;
+                loch_links_rechts = -30;
+                loch_hoch_runter = 0;
+                loch_z = -27;
+                
+                translate([length/2 + loch_links_rechts, width/2 + loch_hoch_runter, 19 + loch_z]) 
+                    rotate([0, 0, loch_rotation]) 
+                    translate([-29/2, -0, 0]) 
+                    cube([29, 10, 10]);
+                
+                // Zusätzliches Loch 2
+                loch2_breite = 10;
+                loch2_tiefe = 15;
+                loch2_rotation = 90;
+                loch2_links_rechts = 35;
+                loch2_hoch_runter = 0;
+                loch2_z = -27;
+                
+                translate([length/2 + loch2_links_rechts, width/2 + loch2_hoch_runter, 19 + loch2_z]) 
+                    rotate([0, 0, loch2_rotation]) 
+                    translate([-loch2_breite/2, -loch2_tiefe/2, 0]) 
+                    cube([loch2_breite, loch2_tiefe, 10]);
+            }
+            
+            // Schraubenhalterung V3
+            cube([6.5,6.5,5]);
+            translate([0,width-6.5,0]) cube([6.5,6.5,5]);
+            translate([length-5.5,0,0]) cube([6.5,6.5,5]);
+            translate([length-5.5,width-6.5,0]) cube([6.5,6.5,5]);
+        }
+        
+        // Schraubenlöcher V3
+        translate([holelength,holewidth,0]) cylinder(6,3.5/2,3.5/2);
+        translate([holelength,width-holewidth,0]) cylinder(6,3.5/2,3.5/2);
+        translate([length-holelength,holewidth,0]) cylinder(6,3.5/2,3.5/2);
+        translate([length-holelength,width-holewidth,0]) cylinder(6,3.5/2,3.5/2);
+        
+        // Mutterneinsatz
+        translate([holelength,holewidth,-2]) rotate(90)cylinder(3,7/2,7/2,$fn=6);
+        translate([holelength,width-holewidth,-2]) rotate(90)cylinder(3,7/2,7/2,$fn=6);
+        translate([length-holelength,holewidth,-2]) rotate(90)cylinder(3,7/2,7/2,$fn=6);
+        translate([length-holelength,width-holewidth,-2]) rotate(90)cylinder(3,7/2,7/2,$fn=6);
+    }
 }
 
-for (i=[-8,8]) translate([-40,i,0]) cylinder(r=4,h=0.2);
-
-rotate([0,180,0]) translate([-30,40,Lite_ESP_position[2]-lite_l/2+1.6])
-intersection() {
-  lite_case();
-  translate([40, 0, Lite_ESP_position[2] + 0.8 + 49.95]) cube([120, 90, 100], center = true);
+// ============================================================
+// RENDER LOGIC
+// ============================================================
+if (render_part == "litecaselidar_bottom") {
+  rotate([0, 180, 0]) translate([-30, 0, -Lite_ESP_position[2] - 0.8])
+    difference() {
+      lite_case();
+      translate([40, 0, Lite_ESP_position[2] + 0.8 + 49.95]) cube([120, 90, 100], center = true);
+    }
+  
+  // Print alignment markers
+  for (i = [-8, 8]) translate([-40, i, 0]) cylinder(r = 4, h = 0.2);
 }
 
-if ($preview) translate([80, 0, 0]) LiteElectronics();
+if (render_part == "battery_bottom") {
+  battery_bottomcase();
+}
+
+if (render_part == "combined") {
+  // LiteCaseLidar bottom
+  rotate([0, 180, 0]) translate([-30, 0, -Lite_ESP_position[2] - 0.8])
+    difference() {
+      lite_case();
+      translate([40, 0, Lite_ESP_position[2] + 0.8 + 49.95]) cube([120, 90, 100], center = true);
+    }
+  
+  
+  
+  // Battery Shield oben drauf - positioniert und rotiert
+  translate([battery_offset_x, battery_offset_y, battery_offset_z])
+    rotate([battery_rotation_x, battery_rotation_y, battery_rotation_z])
+      battery_bottomcase();
+}
+
+if (render_part == "both") {
+  // LiteCaseLidar bottom
+  rotate([0, 180, 0]) translate([-30, 0, -Lite_ESP_position[2] - 0.8])
+    difference() {
+      lite_case();
+      translate([40, 0, Lite_ESP_position[2] + 0.8 + 49.95]) cube([120, 90, 100], center = true);
+    }
+  
+  for (i = [-8, 8]) translate([-40, i, 0]) cylinder(r = 4, h = 0.2);
+  
+  // Battery Shield bottom nebeneinander
+  translate([parts_spacing, 0, 0]) battery_bottomcase();
+}
+
+if (render_part == "preview" || $preview) {
+  translate([80, 0, 0]) LiteElectronics();
+}

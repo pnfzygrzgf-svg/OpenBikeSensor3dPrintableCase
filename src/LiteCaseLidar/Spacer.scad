@@ -3,7 +3,7 @@ B = 20.00;
 H = 2.00;
 
 steg    = 6.30;
-flansch = 12;
+flansch = 10;
 
 r = 0.3;      
 
