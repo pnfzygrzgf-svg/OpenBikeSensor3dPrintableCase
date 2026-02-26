@@ -6,9 +6,15 @@ This repository contains the 3d-printable models for OpenBikeSensor enclosures.
 [Model selection](https://www.openbikesensor.org/device/) (German) |
 [3D printing instructions](https://www.openbikesensor.org/docs/hardware/general/case/) (German)
 
-> **Fork notice:** This repository is a **fork/clone** of the official OpenBikeSensor case repository and includes
-> additional variants.  
-> **New in this fork:** a case for **OpenBikeSensor Lite LiDAR** (`src/LiteCaseLidar`).
+> **Fork notice:** This repository is a **fork/clone** of the official
+> [OpenBikeSensor case repository](https://github.com/openbikesensor/OpenBikeSensor3dPrintableCase)
+> and includes additional variants.
+>
+> **New in this fork:**
+> - **OpenBikeSensor Lite LiDAR case** (`src/LiteCaseLidar`) — enclosure for OBS Lite using a TF-Luna LiDAR sensor instead of ultrasonic
+> - **18650 Battery Shield V3 cases** — enclosures for the battery shield, with variants for standard mount and LiDAR lid
+> - **Extended seat post mount** (`SeatPostMount_long`) — longer seat post mount for more clearance
+> - **Improved DisplayCase parametrization** — better OpenSCAD Customizer support
 
 If you encounter any problems or have feature requests, please open an issue on
 GitHub. If you need assistance related to the contents of this repository,
