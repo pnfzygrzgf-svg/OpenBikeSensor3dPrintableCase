@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: OpenBikeSensor contributors
+
 //18650 Battery Shield V3 Case with StandardMount Adapter
 // Kombiniert das Battery Shield Case mit einem Montage-Adapter
 

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: OpenBikeSensor contributors
+
 L = 49.55;
 B = 20.00;
 H = 2.00;

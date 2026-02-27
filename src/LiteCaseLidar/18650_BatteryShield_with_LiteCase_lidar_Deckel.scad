@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: OpenBikeSensor contributors
+
 // ============================================================
 // LiteCaseLidar Deckel + 18650 Battery Shield V3 Bottom
 // ============================================================

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: OpenBikeSensor contributors
+
 use <../../lib/Round-Anything/polyround.scad>
 use <../Mounting/StandardMountAdapter.scad>
 
